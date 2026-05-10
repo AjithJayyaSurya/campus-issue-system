@@ -1,0 +1,6 @@
+{
+  "name": "campus-issue-system",
+  "version": "1.0.0",
+  "description": "MERN stack campus issue reporting system",
+  "private": true
+}
