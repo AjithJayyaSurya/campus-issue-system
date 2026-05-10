@@ -14,8 +14,19 @@ import StaffAssignedIssuesPage from "../pages/staff/StaffAssignedIssuesPage";
 import IssueDetailsPage from "../pages/IssueDetailsPage";
 import useAuth from "../hooks/useAuth";
 
+const getDashboardPath = (role) => {
+  const roleRoutes = {
+    student: "/student/dashboard",
+    admin: "/admin/dashboard",
+    staff: "/staff/dashboard",
+  };
+
+  return roleRoutes[role] || "/login";
+};
+
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
+  const dashboardPath = getDashboardPath(user?.role);
 
   if (loading) {
     return <Loader />;
@@ -25,9 +36,10 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* Auth Routes */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/student/dashboard" replace /> : <Login />} />
-        <Route path="/login" element={isAuthenticated ? <Navigate to="/student/dashboard" replace /> : <Login />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to={dashboardPath} replace /> : <Login />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to={dashboardPath} replace /> : <Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Navigate to={dashboardPath} replace /> : <Navigate to="/login" replace />} />
 
         {/* Student Routes */}
         <Route
@@ -105,8 +117,8 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Catch all - Redirect to login if not authenticated, otherwise to student dashboard */}
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/student/dashboard" : "/login"} replace />} />
+        {/* Catch all - Redirect to login if not authenticated, otherwise to the user's dashboard */}
+        <Route path="*" element={<Navigate to={isAuthenticated ? dashboardPath : "/login"} replace />} />
       </Routes>
     </BrowserRouter>
   );
